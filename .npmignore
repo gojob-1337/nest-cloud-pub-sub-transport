@@ -1,0 +1,8 @@
+client/
+server/
+test/
+inferfaces/
+typings/
+tsconfig*
+yarn.lock
+jest.config.js
