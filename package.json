@@ -1,0 +1,42 @@
+{
+  "name": "@gojob/nest-cloud-pub-sub-transport",
+  "description": "A Custom Transport strategy of the NestJS microservices pattern for Cloud Pub/Sub.",
+  "version": "0.1.0",
+  "repository": "git@github.com:gojob-1337/nest-cloud-pub-sub-transport.git",
+  "author": "Gojob <tech@gojob.com>",
+  "license": "MIT",
+  "private": false,
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "scripts": {
+    "compile": "./node_modules/.bin/tsc",
+    "build": "yarn compile -p tsconfig.build.json",
+    "format": "prettier --write \"(server|client|test)/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test": "jest --testRegex='((test)/.*\\.spec)\\.ts$'",
+    "test:watch": "yarn test --watch",
+    "test:cov": "yarn test --coverage",
+    "integration": "jest --runInBand --testRegex='((test)/.*\\.integration-test)\\.ts$'"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^0.29.1",
+    "@nestjs/common": "^6.2.4",
+    "@nestjs/core": "^6.2.4",
+    "@nestjs/microservices": "^6.2.4",
+    "@nestjs/platform-express": "^6.2.4",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@gojob/wait-for-assertion": "^1.0.0",
+    "@nestjs/testing": "^6.2.4",
+    "@types/jest": "^24.0.13",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.4.5"
+  }
+}
