@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "@gojob/eslint-config/typescript"
+  ],
+}

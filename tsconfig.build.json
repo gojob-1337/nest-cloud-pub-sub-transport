@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noErrorTruncation": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/__mocks__/**/*.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.integration-test.ts",
+    "**/*.e2e-test.ts",
+    "test",
+  ]
+}
