@@ -1,37 +1,35 @@
+[![CircleCI](https://circleci.com/gh/gojob-1337/nest-cloud-pub-sub-transport.svg?style=svg)](https://circleci.com/gh/gojob-1337/nest-cloud-pub-sub-transport)
 
-# Gojob NestJS Custom Transport for Cloud Pub/Sub
+# Nest Cloud Pub/Sub Transport
 
-A Custom Transport strategy of the NestJS microservices pattern for Cloud Pub/Sub.
+A Custom Transport strategy for Cloud Pub/Sub in Nest microservices.
 
 ## Getting started
 
 :warning: **NOT RELEASED ON NPM FOR NOW** :warning:
+
 ```bash
 yarn add @gojob/nest-cloud-pub-sub-transport
 # or
 npm install @gojob/nest-cloud-pub-sub-transport
 ```
 
-### Respect code style
+### Building
+
+```bash
+yarn build
+```
+
+### Testing
+
+```bash
+yarn test
+yarn integration
+```
+
+### Respecting code style
 
 ```bash
 yarn format
 yarn lint
-```
-
-### Test
-
-```bash
-# unit tests
-yarn test
-yarn test:watch # Jest watch mode
-
-# integration
-yarn integration
-```
-
-### Build
-
-```bash
-yarn build # make sure the project can be compiled
 ```
