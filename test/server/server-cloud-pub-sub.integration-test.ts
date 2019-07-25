@@ -14,7 +14,10 @@ type StrategyOptions = Required<ConstructorParameters<typeof CloudServerPubSub>>
 const topicName = 'nest-test-topic';
 const subscriptionName = 'nest-test-subscription';
 
-const createTestApp = async (mockLogger: MockLogger, strategyOptions?: StrategyOptions): Promise<[INestApplication, Map<string, MessageHandler>]> => {
+const createTestApp = async (
+  mockLogger: MockLogger,
+  strategyOptions?: StrategyOptions,
+): Promise<[INestApplication, Map<string, MessageHandler>]> => {
   const testingModule = await Test.createTestingModule({})
     .overrideProvider('LoggerService')
     .useValue(mockLogger)
@@ -98,7 +101,10 @@ describe('CloudServerPubSub', () => {
           emitMessage(message);
 
           expect(message.ack).toHaveBeenCalled();
-          expect(mockLogger.error).toHaveBeenCalledWith(`Invalid message received (${subscriptionName})`, { rawData, subscriptionName });
+          expect(mockLogger.error).toHaveBeenCalledWith(`Invalid message received (${subscriptionName})`, {
+            rawData,
+            subscriptionName,
+          });
           expect(mockEventHandler).not.toHaveBeenCalled();
         });
 
@@ -110,7 +116,10 @@ describe('CloudServerPubSub', () => {
           emitMessage(message);
 
           expect(message.ack).toHaveBeenCalled();
-          expect(mockLogger.error).toHaveBeenCalledWith(`No handler exists for "${unknownPattern}"`, { messageData, subscriptionName });
+          expect(mockLogger.error).toHaveBeenCalledWith(`No handler exists for "${unknownPattern}"`, {
+            messageData,
+            subscriptionName,
+          });
           expect(mockEventHandler).not.toHaveBeenCalled();
         });
       });

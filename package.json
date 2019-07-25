@@ -12,31 +12,36 @@
     "compile": "./node_modules/.bin/tsc",
     "build": "yarn compile -p tsconfig.build.json",
     "format": "prettier --write \"(server|client|test)/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "lint": "./node_modules/.bin/eslint . --ext .ts",
     "test": "jest --testRegex='((test)/.*\\.spec)\\.ts$'",
     "test:watch": "yarn test --watch",
     "test:cov": "yarn test --coverage",
     "integration": "jest --runInBand --testRegex='((test)/.*\\.integration-test)\\.ts$'"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^0.29.1",
-    "@nestjs/common": "^6.2.4",
-    "@nestjs/core": "^6.2.4",
-    "@nestjs/microservices": "^6.2.4",
-    "@nestjs/platform-express": "^6.2.4",
+    "@google-cloud/pubsub": "^0.30.1",
+    "@nestjs/common": "^6.5.3",
+    "@nestjs/core": "^6.5.3",
+    "@nestjs/microservices": "^6.5.3",
+    "@nestjs/platform-express": "^6.5.3",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@gojob/wait-for-assertion": "^1.0.0",
-    "@nestjs/testing": "^6.2.4",
-    "@types/jest": "^24.0.13",
+    "@nestjs/testing": "^6.5.3",
+    "@types/jest": "^24.0.15",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "jest": "^24.8.0",
-    "prettier": "^1.17.1",
+    "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.4.5"
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  },
+  "resolutions": {
+    "lodash": "^4.17.13"
   }
 }

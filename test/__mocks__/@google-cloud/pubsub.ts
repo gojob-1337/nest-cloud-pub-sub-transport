@@ -21,7 +21,8 @@ const mockPubSubClient = (sub: SubcriptionMock = mockSubscription()): ClientMock
  * @param mock Mock to reset.
  * @param sub Optional mock of subscription.
  */
-const resetClientMock = (mock: ClientMock, sub: SubcriptionMock = mockSubscription()) => Object.assign(mock, mockPubSubClient(sub));
+const resetClientMock = (mock: ClientMock, sub: SubcriptionMock = mockSubscription()) =>
+  Object.assign(mock, mockPubSubClient(sub));
 
 const mockClient = mockPubSubClient();
 const mockedModule = {

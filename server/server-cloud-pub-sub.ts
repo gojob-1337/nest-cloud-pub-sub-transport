@@ -39,7 +39,8 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
     this.subscriptions = [];
     this.pubSubClient = new PubSub(clientConfig);
 
-    this.customLogger = options.enableLogger !== false ? options.logger || this.logger : { log: noop, warn: noop, error: noop };
+    this.customLogger =
+      options.enableLogger !== false ? options.logger || this.logger : { log: noop, warn: noop, error: noop };
   }
 
   /**

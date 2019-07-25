@@ -32,7 +32,6 @@ describe('CloudServerPubSub', () => {
 
       const cloudPubSubConfig: CloudServerPubSubParams = { clientConfig: { projectId: 'nest-is-in-gcp' } };
       const { clientConfig } = cloudPubSubConfig;
-      // tslint:disable-next-line:no-unused-expression
       new CloudServerPubSub({ clientConfig });
 
       expect(PubSub).toHaveBeenCalledWith(clientConfig);
@@ -52,7 +51,11 @@ describe('CloudServerPubSub', () => {
       const topicName = 'custom-topic-with-logger';
       await new CloudServerPubSub().createTopic(topicName);
 
-      expect(spyLogger).toHaveBeenCalledWith(expect.stringMatching(new RegExp(`creating topic ${topicName}`, 'i')), DEFAULT_LOGGER_CONTEXT, false);
+      expect(spyLogger).toHaveBeenCalledWith(
+        expect.stringMatching(new RegExp(`creating topic ${topicName}`, 'i')),
+        DEFAULT_LOGGER_CONTEXT,
+        false,
+      );
       expect(mockPubSubClient.createTopic).toHaveBeenCalled();
     });
 
@@ -64,7 +67,9 @@ describe('CloudServerPubSub', () => {
     });
 
     it('catches errors with code 6 (topic already existing) silently', async () => {
-      mockPubSubClient.createTopic = jest.fn().mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
+      mockPubSubClient.createTopic = jest
+        .fn()
+        .mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
 
       expect.assertions(1);
 
@@ -114,7 +119,9 @@ describe('CloudServerPubSub', () => {
     });
 
     it('catches errors with code 6 (subscription already existing) and create a subscription object', async () => {
-      mockPubSubClient.createSubscription = jest.fn().mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
+      mockPubSubClient.createSubscription = jest
+        .fn()
+        .mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
 
       await new CloudServerPubSub().createSubscription(topicName, subscriptionName);
       expect(mockPubSubClient.subscription).toHaveBeenCalled();
