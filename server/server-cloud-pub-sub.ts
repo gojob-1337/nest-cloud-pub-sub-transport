@@ -45,7 +45,7 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
 
   /**
    * Initializes the default topic and subscription if they were
-   * given to the controller. Then notify the system that the
+   * given to the constructor. Then notify the system that the
    * server is ready.
    *
    * @param callback Executed when the operation is complete.
