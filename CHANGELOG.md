@@ -9,4 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- feat(client): add a Cloud Pub/Sub client
+- chore: update packages and remove the nack delay (not available since node-pubsub 0.30.2)
 - feat(server): Initial commit, source code & tests of server side implementation

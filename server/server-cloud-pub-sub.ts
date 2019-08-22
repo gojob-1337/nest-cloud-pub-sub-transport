@@ -74,9 +74,7 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
   }
 
   /**
-   * Creates a topic in Pub/Sub and keeps a reference to it locally (for
-   * internal operations). If a topic already exists for the given `name`,
-   * directly keeps a reference to it.
+   * Creates a topic in Pub/Sub.
    *
    * @param name Name of the target topic.
    * @param gaxOpts Optional options (see Google API extensions).
