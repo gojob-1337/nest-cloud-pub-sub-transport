@@ -27,9 +27,14 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
   /** Overriden from base class `Server`: we want it re-assignable */
   private customLogger: CloudPubSubLogger;
 
-  constructor(config: CloudPubSubConfig = {}) {
+  constructor(pubsub: PubSub, options?: CloudPubSubConfig['options']);
+  constructor(config?: CloudPubSubConfig);
+  constructor(pubsubOrConfig: CloudPubSubConfig | PubSub = {}, options: CloudPubSubConfig['options'] = {}) {
     super();
-    const { clientConfig, options = {} } = config;
+    if (!(pubsubOrConfig instanceof PubSub)) {
+      options = pubsubOrConfig.options || options;
+      this.pubSubClient = new PubSub(pubsubOrConfig.clientConfig);
+    }
 
     if (options.defaultSubscription && !options.defaultTopic) {
       throw new Error('PubSub: Default subscription name provided without a topic');
@@ -37,7 +42,6 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
 
     this.options = options;
     this.subscriptions = [];
-    this.pubSubClient = new PubSub(clientConfig);
 
     this.customLogger =
       options.enableLogger !== false ? options.logger || this.logger : { log: noop, warn: noop, error: noop };

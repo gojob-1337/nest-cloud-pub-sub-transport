@@ -44,6 +44,13 @@ describe('CloudServerPubSub', () => {
       // "logger" is a protected prop. of class Server from @nestjs/microservices
       expect((cloudServerPubSub as any).customLogger).toBe(customLogger);
     });
+
+    it('should allow custom pubsub instance', () => {
+      const customPubsub = new PubSub();
+      const cloudServerPubSub = new CloudServerPubSub(customPubsub);
+
+      expect((cloudServerPubSub as any).pubSubClient).toBe(customPubsub);
+    });
   });
 
   describe('createTopic', () => {
