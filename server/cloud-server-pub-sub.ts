@@ -121,6 +121,16 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
       }
 
       subscription = this.pubSubClient.subscription(name);
+
+      /* After a topic is deleted, its subscriptions have the topic name "_deleted-topic_".
+      https://cloud.google.com/pubsub/docs/admin#deleting_a_topic
+      People tend to delete and recreate a topic with the same name... But do not think
+      to delete and recreate their subscriptions (which cannot "switch" to the newly created
+      topic). */
+      const metadata = await subscription.getMetadata();
+      if (metadata.length > 0 && metadata[0].topic !== topic) {
+        this.customLogger.warn(`⚠ Subscription ${name} is bound to topic ${metadata[0].topic}`);
+      }
     }
 
     this.subscriptions.push(subscription);

@@ -118,16 +118,39 @@ describe('CloudServerPubSub', () => {
       expect(spyLogger).not.toHaveBeenCalled();
     });
 
-    it('catches errors with code 6 (subscription already existing) and create a subscription object', async () => {
-      mockPubSubClient.createSubscription = jest
-        .fn()
-        .mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
+    describe('When the subscription already exists...', () => {
+      beforeEach(() => {
+        mockPubSubClient.createSubscription = jest
+          .fn()
+          .mockRejectedValue({ code: 6, message: 'Resource already exists in the project' });
+        mockPubSubClient.subscription = jest.fn().mockReturnValue({
+          on: () => undefined,
+          getMetadata: () => [],
+        });
+      });
 
-      await new CloudServerPubSub().createSubscription(topicName, subscriptionName);
-      expect(mockPubSubClient.subscription).toHaveBeenCalled();
+      it('catches errors with code 6 (subscription already existing) and create a subscription object', async () => {
+        await new CloudServerPubSub().createSubscription(topicName, subscriptionName);
+
+        expect(mockPubSubClient.subscription).toHaveBeenCalledWith(subscriptionName);
+      });
+
+      it('warns if the target subscription is bound to an unexpected topic', async () => {
+        const unexpectedTopic = 'different-topic';
+        mockPubSubClient.subscription = jest.fn().mockReturnValue({
+          on: () => undefined,
+          getMetadata: () => [{ topic: unexpectedTopic }],
+        });
+        const [log, warn, error] = [() => undefined, jest.fn(), () => undefined];
+        const server = new CloudServerPubSub({ options: { logger: { log, warn, error } } });
+
+        await server.createSubscription(topicName, subscriptionName);
+
+        expect(warn).toHaveBeenCalledWith(`⚠ Subscription ${subscriptionName} is bound to topic ${unexpectedTopic}`);
+      });
     });
 
-    it('throws any error with an other code than 6', async () => {
+    it('throws forward any error that "subscription already exists"', async () => {
       const expectedError = { code: 7, message: 'PERMISSION_DENIED: User not authorized to perform this action.' };
       mockPubSubClient.createSubscription = jest.fn().mockRejectedValue(expectedError);
 

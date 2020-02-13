@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-02-13
+
+### Added
+
+- feat(server): warn if target subscription is bound to an unexpected topic
+
 ### Changed
 
 - chore(pkg): upgrade nestjs; pub/sub sdk; jest 25
