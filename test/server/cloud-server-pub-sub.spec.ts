@@ -136,17 +136,33 @@ describe('CloudServerPubSub', () => {
       });
 
       it('warns if the target subscription is bound to an unexpected topic', async () => {
-        const unexpectedTopic = 'different-topic';
+        const unexpectedTopicInMetadata = 'projects/your-project/topics/different-topic';
         mockPubSubClient.subscription = jest.fn().mockReturnValue({
           on: () => undefined,
-          getMetadata: () => [{ topic: unexpectedTopic }],
+          getMetadata: () => [{ topic: unexpectedTopicInMetadata }],
         });
         const [log, warn, error] = [() => undefined, jest.fn(), () => undefined];
         const server = new CloudServerPubSub({ options: { logger: { log, warn, error } } });
 
         await server.createSubscription(topicName, subscriptionName);
 
-        expect(warn).toHaveBeenCalledWith(`⚠ Subscription ${subscriptionName} is bound to topic ${unexpectedTopic}`);
+        expect(warn).toHaveBeenCalledWith(
+          `⚠ Subscription ${subscriptionName} is bound to topic ${unexpectedTopicInMetadata}`,
+        );
+      });
+
+      it('does not warn if the target subscription is bound to the expected topic', async () => {
+        const expectedTopicInMetadata = `projects/your-project/topics/${topicName}`;
+        mockPubSubClient.subscription = jest.fn().mockReturnValue({
+          on: () => undefined,
+          getMetadata: () => [{ topic: expectedTopicInMetadata }],
+        });
+        const [log, warn, error] = [() => undefined, jest.fn(), () => undefined];
+        const server = new CloudServerPubSub({ options: { logger: { log, warn, error } } });
+
+        await server.createSubscription(topicName, subscriptionName);
+
+        expect(warn).not.toHaveBeenCalled();
       });
     });
 

@@ -126,9 +126,11 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
       https://cloud.google.com/pubsub/docs/admin#deleting_a_topic
       People tend to delete and recreate a topic with the same name... But do not think
       to delete and recreate their subscriptions (which cannot "switch" to the newly created
-      topic). */
+      topic).
+      Topic name in Metadata is formatted as: `projects/<your-project>/topics/<topic-name>`
+      */
       const metadata = await subscription.getMetadata();
-      if (metadata.length > 0 && metadata[0].topic !== topic) {
+      if (metadata.length > 0 && typeof metadata[0].topic === 'string' && !metadata[0].topic.endsWith(`/${topic}`)) {
         this.customLogger.warn(`⚠ Subscription ${name} is bound to topic ${metadata[0].topic}`);
       }
     }
