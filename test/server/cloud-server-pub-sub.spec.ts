@@ -189,6 +189,36 @@ describe('CloudServerPubSub', () => {
     });
   });
 
+  describe('attachSubscription', () => {
+    let pubSubServer: CloudServerPubSub;
+
+    const logger = {
+      log: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+    };
+    const subscriptionName = 'subscription';
+
+    beforeEach(() => {
+      pubSubServer = new CloudServerPubSub({ options: { logger } });
+    });
+
+    it('logs a success message if subscription has been attached', () => {
+      pubSubServer.attachSubscription(subscriptionName);
+
+      expect(logger.log).toHaveBeenCalledWith(`Subscription ${subscriptionName} successfully attached.`);
+    });
+
+    it('logs and throws an error if the attachment fails', () => {
+      const subscription = jest.spyOn(mockPubSubClient, 'subscription');
+
+      subscription.mockReturnValueOnce(new Error());
+
+      expect(() => pubSubServer.attachSubscription(subscriptionName)).toThrow(expect.any(Error));
+      expect(logger.error).toHaveBeenCalledWith(`An error occured while attaching subscription ${subscriptionName}.`);
+    });
+  });
+
   describe('listen', () => {
     it('executes the given callback', async () => {
       const callback = jest.fn();

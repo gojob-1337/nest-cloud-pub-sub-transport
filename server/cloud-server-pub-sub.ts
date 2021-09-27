@@ -140,6 +140,25 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
   }
 
   /**
+   * Attach a subscription, to react to each message it receives
+   *
+   * @param name Name of the subscription
+   */
+  attachSubscription(name: string) {
+    try {
+      const subscription = this.pubSubClient.subscription(name);
+
+      this.subscriptions.push(subscription);
+      subscription.on('message', message => this.handleMessage(message, name));
+    } catch (error) {
+      this.customLogger.error(`An error occured while attaching subscription ${name}.`);
+      throw error;
+    }
+
+    this.customLogger.log(`Subscription ${name} successfully attached.`);
+  }
+
+  /**
    * Create (or instantiate) a topic `topic`.
    *
    * @param topic Name of the topic to be created (or just instantiated, if existing).
