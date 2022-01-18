@@ -23,7 +23,7 @@ const createTestApp = async (
     .useValue(mockLogger)
     .compile();
 
-  const app = await testingModule.createNestApplication();
+  const app = testingModule.createNestApplication();
   const strategy = new CloudServerPubSub({
     options: {
       defaultTopic: topicName,
@@ -34,7 +34,7 @@ const createTestApp = async (
   });
   app.connectMicroservice({ strategy });
 
-  await app.startAllMicroservices();
+  app.startAllMicroservices();
   await app.init();
 
   return [app, strategy.getHandlers()];
