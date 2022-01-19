@@ -1,11 +1,30 @@
+import { SubscriptionOptions } from '@google-cloud/pubsub';
+
 type mockedMethods = 'createSubscription' | 'createTopic' | 'topic' | 'subscription';
 type ClientMock = Record<mockedMethods, jest.Mock>;
 
-type SubcriptionMock = Record<'on', jest.Mock | ((...args: any) => any)>;
+type SubcriptionMock = {
+  on: jest.Mock | ((...args: any) => any);
+  setOptions?: (options: SubscriptionOptions) => void;
+  getOptions?: () => SubscriptionOptions | undefined;
+  subscriptionOptions?: SubscriptionOptions | undefined;
+};
 
 const initialModule: object = jest.genMockFromModule('@google-cloud/pubsub');
 
-const mockSubscription = (): SubcriptionMock => ({ on: jest.fn() });
+const mockSubscription = (): SubcriptionMock => {
+  return {
+    on: jest.fn(),
+    subscriptionOptions: undefined,
+    setOptions(options: SubscriptionOptions) {
+      this.subscriptionOptions = options;
+    },
+    getOptions() {
+      return this.subscriptionOptions;
+    },
+  };
+};
+
 const mockPubSubClient = (sub: SubcriptionMock = mockSubscription()): ClientMock => ({
   createSubscription: jest.fn().mockResolvedValue([sub]),
   createTopic: jest.fn().mockResolvedValue([{}]),

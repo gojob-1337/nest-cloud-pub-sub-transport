@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common';
 import { Server } from '@nestjs/microservices';
 
 import { CloudServerPubSub } from '../../server/cloud-server-pub-sub';
+import { CloudPubSubConfig } from '../../typings/cloud-pub-sub-config';
 
 describe('CloudServerPubSub', () => {
   let spyLogger: jest.SpyInstance;
@@ -181,7 +182,9 @@ describe('CloudServerPubSub', () => {
     });
 
     it('subscribes to event "message" of the subscription', async () => {
-      const mockSubscription = { on: jest.fn() };
+      const mockSubscription = {
+        on: jest.fn(),
+      };
       __resetClientMock(mockPubSubClient, mockSubscription);
 
       await new CloudServerPubSub().createSubscription(topicName, subscriptionName);
@@ -220,6 +223,9 @@ describe('CloudServerPubSub', () => {
   });
 
   describe('listen', () => {
+    const defaultTopic = 'my-topic';
+    const defaultSubscription = 'my-subscription';
+
     it('executes the given callback', async () => {
       const callback = jest.fn();
       await new CloudServerPubSub().listen(callback);
@@ -228,7 +234,6 @@ describe('CloudServerPubSub', () => {
     });
 
     it('creates the topic if any given', async () => {
-      const defaultTopic = 'my-topic';
       const cloudServerPubSub = new CloudServerPubSub({ options: { defaultTopic } });
 
       await cloudServerPubSub.listen(() => undefined);
@@ -236,13 +241,27 @@ describe('CloudServerPubSub', () => {
     });
 
     it('creates the subscription if any has been given (additionally to the given topic)', async () => {
-      const defaultTopic = 'my-topic';
-      const defaultSubscription = 'my-subscription';
       const cloudServerPubSub = new CloudServerPubSub({ options: { defaultTopic, defaultSubscription } });
 
       await cloudServerPubSub.listen(() => undefined);
       expect(mockPubSubClient.createTopic).toHaveBeenCalledWith(defaultTopic, undefined);
-      expect(mockPubSubClient.createSubscription).toHaveBeenCalledWith(defaultTopic, defaultSubscription, undefined);
+      expect(mockPubSubClient.createSubscription).toHaveBeenCalledWith(defaultTopic, defaultSubscription);
+    });
+
+    it('uses the given "subscribtionOptions" to set subscription options', async () => {
+      const cloudPubSubConfig: CloudPubSubConfig = {
+        subscriptionOptions: { flowControl: { maxMessages: 10 } },
+      };
+      const { subscriptionOptions } = cloudPubSubConfig;
+
+      const cloudServerPubSub = new CloudServerPubSub({
+        options: { defaultTopic, defaultSubscription },
+        subscriptionOptions,
+      });
+
+      await cloudServerPubSub.listen(() => undefined);
+
+      expect(mockPubSubClient.subscription().getOptions()).toEqual(subscriptionOptions);
     });
   });
 
