@@ -21,6 +21,7 @@ const noop = () => undefined;
 export class CloudServerPubSub extends Server implements CustomTransportStrategy {
   private readonly pubSubClient: PubSub;
   private readonly options: Required<CloudPubSubConfig>['options'];
+  private readonly subscriptionOptions: CloudPubSubConfig['subscriptionOptions'];
 
   private readonly subscriptions: Subscription[];
 
@@ -29,13 +30,14 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
 
   constructor(config: CloudPubSubConfig = {}) {
     super();
-    const { clientConfig, options = {} } = config;
+    const { clientConfig, subscriptionOptions, options = {} } = config;
 
     if (options.defaultSubscription && !options.defaultTopic) {
       throw new Error('PubSub: Default subscription name provided without a topic');
     }
 
     this.options = options;
+    this.subscriptionOptions = subscriptionOptions;
     this.subscriptions = [];
     this.pubSubClient = new PubSub(clientConfig);
 
@@ -103,16 +105,15 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
    *
    * @param topic Name of the topic to subscribe to.
    * @param name Name of the subscription.
-   * @param options `CreateSubscriptionOptions` passed as-is to the Node.js client.
    *
    * @return Resolves on success, or rejects.
    */
-  async createSubscription(topic: string, name: string, options?: Parameters<PubSub['createSubscription']>[2]) {
+  async createSubscription(topic: string, name: string) {
     let subscription: Subscription;
     this.customLogger.log(`Creating subscription ${name} to topic ${topic}...`);
 
     try {
-      const results = await this.pubSubClient.createSubscription(topic, name, options);
+      const results = await this.pubSubClient.createSubscription(topic, name);
       subscription = results[0];
     } catch (err) {
       // error code 6: resource already existing
@@ -133,6 +134,10 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
       if (metadata.length > 0 && typeof metadata[0].topic === 'string' && !metadata[0].topic.endsWith(`/${topic}`)) {
         this.customLogger.warn(`⚠ Subscription ${name} is bound to topic ${metadata[0].topic}`);
       }
+    }
+
+    if (typeof this.subscriptionOptions !== 'undefined') {
+      subscription.setOptions(this.subscriptionOptions);
     }
 
     this.subscriptions.push(subscription);
@@ -176,7 +181,8 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
   /**
    * Create (or instantiate) a subscription `subscription`.
    *
-   * @param topic Name of the subscription to be created (or just instantiated, if existing).
+   * @param topic Name of the topic to subscribe to.
+   * @param name Name of the subscription.
    *
    * @return Resolves with an instance of `Subscription`, or undefined. Any error will be logged but not rejected.
    */

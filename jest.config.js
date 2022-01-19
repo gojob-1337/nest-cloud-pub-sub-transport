@@ -4,7 +4,7 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
-  roots: ['<rootDir>/test/'],
+  roots: ['<rootDir>/test/', '<rootDir>/server/'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   collectCoverageFrom: ['test/**/*.{js,ts}', '!**/node_modules/**', '!**/dist/**', '!**/vendor/**'],
   coverageReporters: ['json', 'lcov'],
