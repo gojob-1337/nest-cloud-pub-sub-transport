@@ -153,6 +153,10 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
     try {
       const subscription = this.pubSubClient.subscription(name);
 
+      if (typeof this.subscriptionOptions !== 'undefined') {
+        subscription.setOptions(this.subscriptionOptions);
+      }
+
       this.subscriptions.push(subscription);
       subscription.on('message', message => this.handleMessage(message, name));
     } catch (error) {

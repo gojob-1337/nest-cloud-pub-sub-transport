@@ -1,7 +1,7 @@
 {
   "name": "@gojob/nest-cloud-pub-sub-transport",
   "description": "A Custom Transport strategy of the NestJS microservices pattern for Cloud Pub/Sub.",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "repository": "git@github.com:gojob-1337/nest-cloud-pub-sub-transport.git",
   "author": "VinceOPS <vincent@gojob.com>",
   "license": "MIT",
