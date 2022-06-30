@@ -220,6 +220,21 @@ describe('CloudServerPubSub', () => {
       expect(() => pubSubServer.attachSubscription(subscriptionName)).toThrow(expect.any(Error));
       expect(logger.error).toHaveBeenCalledWith(`An error occured while attaching subscription ${subscriptionName}.`);
     });
+
+    it('uses the given "subscribtionOptions" to set subscription options', async () => {
+      const cloudPubSubConfig: CloudPubSubConfig = {
+        subscriptionOptions: { flowControl: { maxMessages: 10 } },
+      };
+      const { subscriptionOptions } = cloudPubSubConfig;
+
+      const cloudServerPubSub = new CloudServerPubSub({
+        subscriptionOptions,
+      });
+
+      await cloudServerPubSub.attachSubscription(subscriptionName);
+
+      expect(mockPubSubClient.subscription().getOptions()).toEqual(subscriptionOptions);
+    });
   });
 
   describe('listen', () => {
