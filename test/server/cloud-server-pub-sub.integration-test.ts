@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { MessageHandler } from '@nestjs/microservices';
 import { Test } from '@nestjs/testing';
 import { EventEmitter } from 'events';
+import { of, throwError } from 'rxjs';
 
 import { CloudServerPubSub } from '../../server/cloud-server-pub-sub';
 import { CloudPubSubMessage } from '../../typings/cloud-pub-sub-message';
@@ -152,11 +153,11 @@ describe('CloudServerPubSub', () => {
       });
 
       describe('Valid messages', () => {
-        it('does not ACK the message if its handler throws an error, but logs it', () => {
-          const error = new Error('Handlers gonna handle');
-          mockEventHandler.mockRejectedValue(error);
+        const expectNackAndLogOnError = (mockRejection: (error: Error) => void) => {
           const data = { input: 4 };
           const message = buildMessage(JSON.stringify({ pattern, data }));
+          const error = new Error('Handlers gonna handle');
+          mockRejection(error);
 
           emitMessage(message);
 
@@ -168,11 +169,21 @@ describe('CloudServerPubSub', () => {
             });
             expect(message.nack).toHaveBeenCalled();
           });
+        };
+
+        it('does not ACK the message if its handler throws an error, but logs it', () => {
+          expectNackAndLogOnError(error => mockEventHandler.mockRejectedValue(error));
+        });
+
+        it('does not ACK the message if its handler resolves an observable error, but logs it', () => {
+          expectNackAndLogOnError(error => mockEventHandler.mockResolvedValueOnce(throwError(error)));
         });
 
         it('ACK the message if its handler does not throw', () => {
           const data = { input: 4 };
           const message = buildMessage(JSON.stringify({ pattern, data }));
+
+          mockEventHandler.mockResolvedValueOnce(of());
 
           emitMessage(message);
 
