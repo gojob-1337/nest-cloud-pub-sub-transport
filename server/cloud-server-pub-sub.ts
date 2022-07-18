@@ -241,6 +241,9 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
     // ackAfterHandler has been enabled: execute the handler, then, eventually ACK the message
     try {
       const observableResult = await handler(data);
+      if (observableResult) {
+        await observableResult.toPromise();
+      }
       message.ack();
       return observableResult;
     } catch (error) {
