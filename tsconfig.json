@@ -13,12 +13,8 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "useUnknownInCatchVariables": false
   },
-  "include": [
-    "client/**/*",
-    "server/**/*", 
-    "test/**/*",
-    "index.ts",
-  ]
+  "include": ["client/**/*", "server/**/*", "test/**/*", "index.ts"]
 }
