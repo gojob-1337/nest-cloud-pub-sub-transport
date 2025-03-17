@@ -1,6 +1,5 @@
 module.exports = {
   testEnvironment: 'node',
-  notify: true,
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },

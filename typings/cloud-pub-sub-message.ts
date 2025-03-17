@@ -1,3 +1,5 @@
+import { PreciseDate } from '@google-cloud/precise-date';
+
 /**
  * Message objects provide a simple interface for users to get
  * message data and acknowledge the message.
@@ -21,7 +23,7 @@ export type CloudPubSubMessage = {
   length: number;
 
   /** The time at which the message was published. */
-  publishTime: string;
+  publishTime: PreciseDate;
 
   /** The time at which the message was recieved by the subscription. */
   received: number;

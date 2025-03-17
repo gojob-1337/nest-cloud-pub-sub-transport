@@ -1,13 +1,11 @@
 import { __clientMock, __resetClientMock, PubSub } from '@google-cloud/pubsub';
 import { Logger } from '@nestjs/common';
-import { Server } from '@nestjs/microservices';
 
 import { CloudServerPubSub } from '../../server/cloud-server-pub-sub';
 import { CloudPubSubConfig } from '../../typings/cloud-pub-sub-config';
 
 describe('CloudServerPubSub', () => {
   let spyLogger: jest.SpyInstance;
-  const DEFAULT_LOGGER_CONTEXT = Server.name;
   let mockPubSubClient: Record<keyof typeof __clientMock, jest.Mock>;
 
   beforeEach(() => {
@@ -50,13 +48,13 @@ describe('CloudServerPubSub', () => {
   describe('createTopic', () => {
     it('logs and executes the creation of the topic with the given name', async () => {
       const topicName = 'custom-topic-with-logger';
-      await new CloudServerPubSub().createTopic(topicName);
+      await new CloudServerPubSub({
+        options: {
+          logger: Logger,
+        },
+      }).createTopic(topicName);
 
-      expect(spyLogger).toHaveBeenCalledWith(
-        expect.stringMatching(new RegExp(`creating topic ${topicName}`, 'i')),
-        DEFAULT_LOGGER_CONTEXT,
-        false,
-      );
+      expect(spyLogger).toHaveBeenCalledWith(expect.stringMatching(new RegExp(`creating topic ${topicName}`, 'i')));
       expect(mockPubSubClient.createTopic).toHaveBeenCalled();
     });
 
@@ -103,12 +101,14 @@ describe('CloudServerPubSub', () => {
     });
 
     it('logs and executes the creation of the subscription with the given name', async () => {
-      await new CloudServerPubSub().createSubscription(topicName, subscriptionName);
+      await new CloudServerPubSub({
+        options: {
+          logger: Logger,
+        },
+      }).createSubscription(topicName, subscriptionName);
 
       expect(spyLogger).toHaveBeenCalledWith(
         expect.stringMatching(new RegExp(`creating subscription ${subscriptionName} to topic ${topicName}`, 'i')),
-        DEFAULT_LOGGER_CONTEXT,
-        false,
       );
       expect(mockPubSubClient.createSubscription).toHaveBeenCalled();
     });
