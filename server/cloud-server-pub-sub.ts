@@ -72,7 +72,7 @@ export class CloudServerPubSub extends Server implements CustomTransportStrategy
    */
   close() {
     this.customLogger.log('Closing connection...');
-    return Promise.all(this.subscriptions.map(subscription => subscription.close()));
+    return Promise.all(this.subscriptions.map(subscription => subscription.close && subscription.close()));
   }
 
   /**
